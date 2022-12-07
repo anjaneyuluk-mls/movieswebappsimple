@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Movies File</title>
+  </head>
+  <body>
+    <h1>Favourite Movies</h1>
+    <input id="newmovie" type="text" />
+    <button onclick="addMovie()">add</button>
+    <ul id="movies"></ul>
+    <button onclick="fetchMovies()">refresh</button>
+    <script>
+      const moviesElement = document.getElementById('movies');
+      function fetchMovies() {
+        moviesElement.innerHTML = '';
+        fetch('movies')
+          .then((res) => res.json())
+          .then((data) => {
+            data.forEach((movie) => {
+              const li = document.createElement('li');
+              li.innerHTML = movie;
+              moviesElement.append(li);
+            });
+          });
+      }
+
+      function addMovie() {
+        const value = document.getElementById('newmovie').value;
+        fetch('movie', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name: value }),
+        }).then((res) => {
+          fetchMovies();
+        });
+      }
+
+      fetchMovies();
+    </script>
+  </body>
+</html>
